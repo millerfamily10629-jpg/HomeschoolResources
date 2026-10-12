@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Order of Operations | Coffee, Chaos & Curriculum</title><style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:#23313b;background:#f4f6f8}*{box-sizing:border-box}body{margin:0}.wrap{max-width:780px;margin:30px auto;padding:0 16px}header{background:#183e52;color:white;padding:25px 30px;border-radius:16px 16px 0 0}header small{letter-spacing:.12em;text-transform:uppercase;color:#c9e3e9}h1{margin:7px 0;font-size:clamp(1.5rem,4vw,2.1rem)}main{background:white;padding:26px 30px;border-radius:0 0 16px 16px;box-shadow:0 5px 25px #17304412}p{line-height:1.55}.muted{color:#526574}.progress{height:10px;background:#e3eaf0;border-radius:20px;overflow:hidden;margin:14px 0 22px}.fill{height:100%;width:0;background:#287d85;transition:width .2s}.problem{font-size:clamp(1.5rem,5vw,2rem);font-weight:650;padding:24px 12px;text-align:center;background:#f3f7f8;border-radius:12px;margin:18px 0}.answerline{display:flex;gap:10px;flex-wrap:wrap}input{font:inherit;font-size:1.15rem;padding:13px 14px;border:2px solid #aabcc6;border-radius:9px;flex:1;min-width:150px}button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:13px 20px;background:#176678;color:white;font-weight:700}button:hover{background:#124c59}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#e9f0f3;color:#16485b}.secondary:hover{background:#dbe9ee}.feedback{padding:15px 18px;border-radius:10px;margin-top:17px;line-height:1.6}.correct{background:#e4f5e9;border:1px solid #9bd5ad}.incorrect{background:#fff0e9;border:1px solid #e8b79e}.hidden{display:none}.score{font-size:2.3rem;font-weight:800;color:#176678}.review{border-bottom:1px solid #e1e8ec;padding:12px 0}.review strong{display:block}.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.printhead{display:none}@media print{body{background:white}.wrap{margin:0;max-width:none}header,button,.progress,.answerline,#intro,#quiz{display:none!important}main{box-shadow:none;padding:0}#results{display:block!important}.printhead{display:block}}
+</style></head><body><div class="wrap"><header><small>Coffee, Chaos &amp; Curriculum • Math Practice</small><h1>Order of Operations Review</h1><div>Self-grading • 15 questions per session</div></header><main>
+<section id="intro"><h2>Ready to practice?</h2><p>Solve each expression using the correct order of operations. Enter your numerical answer and select <strong>Check Answer</strong>. You'll receive feedback after each problem.</p><p class="muted">Use a minus sign for negative answers. You can enter decimals or fractions (such as 1/2) when needed. No calculator is recommended.</p><button id="start">Start Practice</button></section>
+<section id="quiz" class="hidden"><div class="row"><strong id="count"></strong><strong id="running"></strong></div><div class="progress"><div id="fill" class="fill"></div></div><div class="problem" id="question" aria-live="polite"></div><form id="form"><label for="answer">Your answer</label><div class="answerline"><input id="answer" autocomplete="off" inputmode="decimal" required aria-label="Numerical answer"><button id="check" type="submit">Check Answer</button></div></form><div id="feedback" class="feedback hidden" role="status" aria-live="polite"></div><button id="next" class="hidden" style="margin-top:16px">Next Question →</button></section>
+<section id="results" class="hidden"><div class="printhead"><h1>Order of Operations — Results</h1><p>Student: ________________________ Date: _______________</p></div><h2>Practice Complete!</h2><div id="score" class="score"></div><p id="summary"></p><div class="row"><button id="again">Try a New Set</button><button class="secondary" onclick="window.print()">Print Results / Save PDF</button></div><h3>Answer Review</h3><div id="review"></div></section>
+</main></div><script>
+'use strict';
+// Each item: displayed expression, correct value, explanation.
+const bank=[
+['8 + 3 × 4',20,'Multiply first: 3 × 4 = 12. Then 8 + 12 = 20.'],
+['24 ÷ 6 + 7',11,'Divide first: 24 ÷ 6 = 4. Then 4 + 7 = 11.'],
+['18 − 2 × 5',8,'Multiply first: 2 × 5 = 10. Then 18 − 10 = 8.'],
+['6 × 3 − 8 ÷ 2',14,'Multiply and divide first: 18 − 4 = 14.'],
+['30 ÷ 5 × 2',12,'Multiplication and division go left to right: 6 × 2 = 12.'],
+['20 − 12 ÷ 3 + 2',18,'Divide first: 12 ÷ 3 = 4. Then 20 − 4 + 2 = 18.'],
+['4 + 18 ÷ 3 × 2',16,'Divide and multiply left to right: 18 ÷ 3 = 6; 6 × 2 = 12; 4 + 12 = 16.'],
+['7 × 4 − 3 × 6',10,'Multiply first: 28 − 18 = 10.'],
+['36 ÷ 4 + 5 × 2',19,'Divide and multiply: 9 + 10 = 19.'],
+['50 − 6 × 7',8,'Multiply first: 6 × 7 = 42. Then 50 − 42 = 8.'],
+['(8 + 4) × 3',36,'Parentheses first: 8 + 4 = 12. Then 12 × 3 = 36.'],
+['28 ÷ (3 + 4)',4,'Parentheses first: 3 + 4 = 7. Then 28 ÷ 7 = 4.'],
+['5 × (12 − 7) + 2',27,'Parentheses: 12 − 7 = 5. Then 5 × 5 + 2 = 27.'],
+['40 − (6 + 2) × 3',16,'Parentheses: 6 + 2 = 8. Then 40 − 24 = 16.'],
+['(15 − 3) ÷ 4 + 9',12,'Parentheses: 15 − 3 = 12. Divide: 12 ÷ 4 = 3. Add 9 = 12.'],
+['3 × (9 − 5) + 6',18,'Parentheses: 9 − 5 = 4. Then 3 × 4 + 6 = 18.'],
+['(18 + 6) ÷ (2 × 3)',4,'Parentheses: 24 ÷ 6 = 4.'],
+['48 ÷ (10 − 4) × 2',16,'Parentheses: 10 − 4 = 6. Then 48 ÷ 6 × 2 = 8 × 2 = 16.'],
+['(7 + 5) × (9 − 6)',36,'Parentheses: 12 × 3 = 36.'],
+['60 ÷ (4 + 6) + 8',14,'Parentheses: 4 + 6 = 10. Then 60 ÷ 10 + 8 = 14.'],
+['3² + 4 × 2',17,'Exponent: 3² = 9. Multiply: 4 × 2 = 8. Add: 17.'],
+['5² − 3 × 4',13,'Exponent: 25. Multiply: 12. Subtract: 13.'],
+['2³ + 18 ÷ 3',14,'Exponent: 2³ = 8. Divide: 18 ÷ 3 = 6. Add: 14.'],
+['(4 + 2)² ÷ 9',4,'Parentheses: 6. Square: 36. Divide by 9 = 4.'],
+['6 × 2² + 1',25,'Exponent: 2² = 4. Multiply: 24. Add 1 = 25.'],
+['50 − (3² + 7)',34,'Exponent: 3² = 9. Parentheses: 9 + 7 = 16. Then 50 − 16 = 34.'],
+['4² ÷ 2 + 3²',17,'Exponents: 16 and 9. Divide: 16 ÷ 2 = 8. Add: 17.'],
+['2 × (3 + 4)²',98,'Parentheses: 7. Square: 49. Multiply by 2 = 98.'],
+['100 ÷ 5² + 6',10,'Exponent: 5² = 25. Divide: 100 ÷ 25 = 4. Add: 10.'],
+['(2³ + 4) ÷ 3',4,'Exponent: 8. Parentheses: 8 + 4 = 12. Divide: 4.'],
+['−5 + 3 × 4',7,'Multiply first: 3 × 4 = 12. Then −5 + 12 = 7.'],
+['6 − (−2 × 3)',12,'Parentheses: −2 × 3 = −6. Then 6 − (−6) = 12.'],
+['(−3)² + 5',14,'Square −3 to get 9. Then 9 + 5 = 14.'],
+['20 ÷ (−4) + 9',4,'Divide: 20 ÷ (−4) = −5. Then −5 + 9 = 4.'],
+['4 × (−2 + 7) − 3',17,'Parentheses: −2 + 7 = 5. Then 4 × 5 − 3 = 17.'],
+['2.5 × 4 + 3',13,'Multiply: 2.5 × 4 = 10. Then 10 + 3 = 13.'],
+['(6.4 − 2.4) ÷ 2',2,'Parentheses: 6.4 − 2.4 = 4. Divide by 2 = 2.'],
+['12 − 1.5 × 4',6,'Multiply: 1.5 × 4 = 6. Then 12 − 6 = 6.'],
+['3 × (2 + 1.5)',10.5,'Parentheses: 2 + 1.5 = 3.5. Multiply by 3 = 10.5.'],
+['(18 ÷ 3)² − 20',16,'Parentheses: 18 ÷ 3 = 6. Square: 36. Subtract 20 = 16.']
+];
+const $=id=>document.getElementById(id);let questions=[],index=0,points=0,history=[],locked=false;
+function show(id){for(const s of ['intro','quiz','results'])$(s).classList.toggle('hidden',s!==id)}
+function start(){questions=[...bank].sort(()=>Math.random()-.5).slice(0,15);index=0;points=0;history=[];show('quiz');render()}
+function render(){locked=false;const q=questions[index];$('count').textContent=`Question ${index+1} of ${questions.length}`;$('running').textContent=`Correct: ${points}`;$('fill').style.width=`${index/questions.length*100}%`;$('question').textContent=q[0];$('answer').value='';$('answer').disabled=false;$('check').disabled=false;$('form').classList.remove('hidden');$('feedback').className='feedback hidden';$('next').classList.add('hidden');$('next').textContent=index===questions.length-1?'See My Results →':'Next Question →';$('answer').focus()}
+function parseNumber(s){s=s.trim().replace(/,/g,'');if(/^[-+]?(?:\d+\.?\d*|\.\d+)\s*\/\s*[-+]?(?:\d+\.?\d*|\.\d+)$/.test(s)){const [a,b]=s.split('/').map(Number);return b===0?NaN:a/b}if(!/^[-+]?(?:\d+\.?\d*|\.\d+)$/.test(s))return NaN;return Number(s)}
+$('form').addEventListener('submit',e=>{e.preventDefault();if(locked)return;const raw=$('answer').value;const val=parseNumber(raw);if(!Number.isFinite(val)){$('feedback').className='feedback incorrect';$('feedback').textContent='Enter a valid number (or a fraction such as 1/2).';return}locked=true;const q=questions[index],ok=Math.abs(val-q[1])<1e-8;if(ok)points++;history.push({q:q[0],submitted:raw,correct:q[1],ok,explanation:q[2]});$('feedback').className='feedback '+(ok?'correct':'incorrect');$('feedback').textContent=(ok?'✓ Correct! ':'✗ Not quite. The correct answer is '+q[1]+'. ')+q[2];$('answer').disabled=true;$('check').disabled=true;$('next').classList.remove('hidden');$('running').textContent=`Correct: ${points}`;$('fill').style.width=`${(index+1)/questions.length*100}%`});
+$('next').addEventListener('click',()=>{index++;if(index>=questions.length)results();else render()});
+function results(){show('results');$('score').textContent=`${points} / ${questions.length} (${Math.round(points/questions.length*100)}%)`;$('summary').textContent='Review your answers below, or try another randomly selected set of questions.';$('review').replaceChildren();history.forEach((h,i)=>{const d=document.createElement('div');d.className='review';const heading=document.createElement('strong');heading.textContent=`${i+1}. ${h.q} — ${h.ok?'Correct':'Incorrect'}`;const detail=document.createElement('div');detail.textContent=`Your answer: ${h.submitted} | Correct answer: ${h.correct}`;const explanation=document.createElement('div');explanation.className='muted';explanation.textContent=h.explanation;d.append(heading,detail,explanation);$('review').append(d)})}
+$('start').addEventListener('click',start);$('again').addEventListener('click',start);
+</script></body></html>
