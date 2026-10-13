@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figurative Language Frenzy | Coffee, Chaos & Curriculum</title>
+<style>
+:root{--ink:#253047;--cream:#fff9ec;--gold:#f7b844;--blue:#3976b9;--green:#247956;--red:#b63f51}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#fff6de,#e5f2ff);color:var(--ink);min-height:100vh}.wrap{max-width:930px;margin:auto;padding:20px}.hero{text-align:center}.hero h1{font-size:clamp(2rem,5vw,3.5rem);margin:.2em 0;color:#633f86}.hero p{margin:8px 0 18px}.panel{background:white;border-radius:22px;padding:24px;box-shadow:0 12px 35px #2636541b;margin:18px 0}.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}label{font-weight:750;display:block;margin-bottom:6px}select,input{width:100%;font:inherit;padding:12px;border:2px solid #cbd6e8;border-radius:12px;background:#fff}button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:13px 18px;font-weight:800;background:var(--blue);color:white;transition:transform .12s,filter .12s}button:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffa62b;outline-offset:3px}button:disabled{opacity:.55;cursor:default}.primary{background:#6e4396}.secondary{background:#536478}.center{text-align:center}.start{margin-top:18px;width:100%;font-size:1.1rem}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.stat{background:#f3f6fc;padding:12px 7px;border-radius:13px;text-align:center;font-size:.85rem}.stat strong{display:block;font-size:1.5rem;font-variant-numeric:tabular-nums}.progress{height:13px;background:#e6eaf4;border-radius:40px;overflow:hidden;margin:18px 0}.fill{height:100%;background:linear-gradient(90deg,#f7b844,#9a62cd);width:0%;transition:width .3s}.sentence{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:750;text-align:center;line-height:1.5;min-height:100px;display:grid;place-items:center;margin:12px 0 25px}.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.choice{background:#f4f4ff;color:#27294b;border:2px solid #c8c8e5;min-height:62px}.choice:hover:not(:disabled){background:#e5e7ff}.choice.correct{background:#d6f3e5;border-color:#249164}.choice.incorrect{background:#ffe4e8;border-color:#ce475d}.feedback{min-height:83px;margin-top:15px;padding:12px 14px;border-radius:13px;background:#f5f7fb;line-height:1.4}.feedback.good{background:#e0f5e9}.feedback.bad{background:#fff0e9}.next{width:100%;margin-top:14px}.hidden{display:none!important}.tiny{color:#59647a;font-size:.9rem}.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.chip{background:#f2e6fc;padding:6px 10px;border-radius:100px;font-size:.83rem}.results h2{margin-bottom:4px}.review{padding:9px 0;border-bottom:1px solid #e3e6ef}.review:last-child{border:0}.footer{text-align:center;color:#657081;font-size:.86rem;padding:16px}@media(max-width:550px){.stats{grid-template-columns:repeat(2,1fr)}.choices{grid-template-columns:1fr}.panel{padding:17px}.sentence{min-height:75px}}
+</style>
+</head>
+<body><main class="wrap"><header class="hero"><h1>🎭 Figurative Language Frenzy!</h1><p>Read the example. Spot the figurative language. Build your streak!</p></header>
+<section id="setup" class="panel"><h2>🎮 Game Setup</h2><p>Choose how you want to practice. Each round draws randomly selected examples from a bank of 100 questions.</p><div class="menu"><div><label for="player">Player name (optional)</label><input id="player" maxlength="30" placeholder="Your name"></div><div><label for="count">Round length</label><select id="count"><option value="10">10 questions</option><option value="15" selected>15 questions</option><option value="20">20 questions</option></select></div><div><label for="mode">Challenge</label><select id="mode"><option value="all">All 6 types</option><option value="core">Simile, Metaphor, Personification</option><option value="sound">Hyperbole, Idiom, Onomatopoeia</option></select></div></div><p class="tiny">🏆 Best scores are saved in this browser on this device. No account needed.</p><div class="chips"><span class="chip">Simile</span><span class="chip">Metaphor</span><span class="chip">Personification</span><span class="chip">Hyperbole</span><span class="chip">Idiom</span><span class="chip">Onomatopoeia</span></div><button id="start" class="primary start">Start Frenzy! →</button><p id="bestMenu" class="center tiny" aria-live="polite"></p></section>
+<section id="game" class="panel hidden" aria-label="Question round"><div class="stats"><div class="stat">Question<strong id="number">1/15</strong></div><div class="stat">Score<strong id="score">0</strong></div><div class="stat">🔥 Streak<strong id="streak">0</strong></div><div class="stat">🏆 Best<strong id="best">0</strong></div></div><div class="progress" role="progressbar" aria-label="Questions completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div id="fill" class="fill"></div></div><p class="center tiny">Which type of figurative language is used?</p><div id="sentence" class="sentence"></div><div id="choices" class="choices"></div><div id="feedback" class="feedback" role="status" aria-live="polite">Choose an answer to see an explanation.</div><button id="next" class="next hidden">Next Question →</button></section>
+<section id="results" class="panel results hidden"><div class="center"><h2 id="resultTitle">Round complete!</h2><p id="resultSummary"></p><p id="record" role="status"></p><button id="again" class="primary">Play Again ↻</button> <button id="settings" class="secondary">Change Settings</button></div><h3>Answer Review</h3><div id="review"></div></section><footer class="footer">Coffee, Chaos & Curriculum · Reading & Writing Games</footer></main>
+<script>
+'use strict';
+const BANK=[
+['Simile','The clouds floated like cotton candy across the sky.','Uses like to compare clouds to cotton candy.'],
+['Simile','His backpack felt as heavy as a boulder.','Uses as to compare the weight of the backpack to a boulder.'],
+['Simile','The lake shimmered like a sheet of glass.','Uses like to compare the lake to glass.'],
+['Simile','She darted through the hallway like a lightning bolt.','Uses like to compare her movement to lightning.'],
+['Simile','The puppy was as playful as a bouncing ball.','Uses as to compare the puppy to a ball.'],
+['Simile','The new student stood as still as a statue.','Uses as to compare the student to a statue.'],
+['Simile','His laughter rang out like a church bell.','Uses like to compare laughter to the sound of a bell.'],
+['Simile','The snow sparkled like scattered diamonds.','Uses like to compare snow to diamonds.'],
+['Simile','Her hands were as cold as ice.','Uses as to compare the temperature of hands to ice.'],
+['Simile','The trail twisted like a ribbon through the forest.','Uses like to compare the trail to a ribbon.'],
+['Metaphor','The classroom was a zoo after the bell rang.','Directly calls the classroom a zoo without like or as.'],
+['Metaphor','Time is a thief that steals our moments.','Directly describes time as a thief.'],
+['Metaphor','Her voice was music to his ears.','Directly compares her voice to music.'],
+['Metaphor','His mind was a maze of questions.','Directly compares a mind to a maze.'],
+['Metaphor','The soccer field was a battlefield.','Directly calls the field a battlefield.'],
+['Metaphor','The stars were tiny lanterns in the darkness.','Directly compares stars to lanterns.'],
+['Metaphor','My little brother is a tornado in the morning.','Directly compares a brother to a tornado.'],
+['Metaphor','The internet is a vast ocean of information.','Directly compares the internet to an ocean.'],
+['Metaphor','Her smile was sunshine on a rainy day.','Directly compares a smile to sunshine.'],
+['Metaphor','The test was a mountain I had to climb.','Directly describes the test as a mountain.'],
+['Personification','The wind whispered through the pine trees.','Gives wind the human action of whispering.'],
+['Personification','The alarm clock screamed at six in the morning.','Gives an alarm clock the human action of screaming.'],
+['Personification','The sun smiled down on the playground.','Gives the sun the human ability to smile.'],
+['Personification','The old floorboards groaned under our feet.','Describes floorboards as if they could groan.'],
+['Personification','The moon peeked between the clouds.','Gives the moon the human action of peeking.'],
+['Personification','The angry storm pounded on the windows.','Describes a storm with human emotion and action.'],
+['Personification','The leaves danced across the sidewalk.','Gives leaves the human action of dancing.'],
+['Personification','My homework glared at me from the desk.','Gives homework the human action of glaring.'],
+['Personification','The city never sleeps.','Gives a city the human ability to sleep.'],
+['Personification','The flowers nodded in the gentle breeze.','Gives flowers the human action of nodding.'],
+['Hyperbole','I have told you a million times to close the door!','A million times is a deliberate exaggeration.'],
+['Hyperbole','This suitcase weighs a ton!','A ton is an exaggeration of the suitcase’s weight.'],
+['Hyperbole','I could sleep for a hundred years.','A hundred years is an impossible exaggeration.'],
+['Hyperbole','The line at the cafeteria was a mile long.','Exaggerates the length of the line.'],
+['Hyperbole','I am so hungry I could eat a horse.','Exaggerates how hungry the speaker feels.'],
+['Hyperbole','She ran faster than the speed of light.','Exaggerates running speed beyond what is possible.'],
+['Hyperbole','He had mountains of homework to finish.','Exaggerates the amount of homework.'],
+['Hyperbole','Everyone on Earth was at the concert.','Exaggerates the crowd size.'],
+['Hyperbole','The joke made me laugh until my sides split.','Exaggerates the effect of laughing.'],
+['Hyperbole','It took forever for the video to load.','Forever is an exaggeration of the wait time.'],
+['Idiom','Before the big test, Maya told me to break a leg.','Break a leg means good luck, not a literal injury.'],
+['Idiom','I was feeling under the weather yesterday.','Under the weather means feeling sick.'],
+['Idiom','We need to hit the books before Friday.','Hit the books means to study.'],
+['Idiom','You let the cat out of the bag about the surprise.','Let the cat out of the bag means reveal a secret.'],
+['Idiom','That math quiz was a piece of cake.','A piece of cake means very easy.'],
+['Idiom','Dad said the new phone would cost an arm and a leg.','Cost an arm and a leg means very expensive.'],
+['Idiom','After the argument, Leo decided to bury the hatchet.','Bury the hatchet means make peace.'],
+['Idiom','We are all in the same boat with this assignment.','In the same boat means sharing a situation.'],
+['Idiom','She spilled the beans about the class trip.','Spilled the beans means revealed a secret.'],
+['Idiom','The coach told us to keep our eyes on the ball.','Keep your eyes on the ball means stay focused.'],
+['Onomatopoeia','CRASH! The tray hit the kitchen floor.','Crash imitates the sound of something falling.'],
+['Onomatopoeia','The bacon sizzled in the hot pan.','Sizzled imitates the sound of cooking bacon.'],
+['Onomatopoeia','Buzz! A bee flew past my ear.','Buzz imitates the sound of a bee.'],
+['Onomatopoeia','The clock tick-tocked in the quiet room.','Tick-tocked imitates the sound of a clock.'],
+['Onomatopoeia','The balloon popped with a loud BANG!','Bang imitates the bursting sound.'],
+['Onomatopoeia','The rain went pitter-patter on the roof.','Pitter-patter imitates the sound of rain.'],
+['Onomatopoeia','The door slammed with a THUD.','Thud imitates the sound of impact.'],
+['Onomatopoeia','The snake hissed from behind the rock.','Hissed imitates the sound of the snake.'],
+['Onomatopoeia','The fire crackled in the fireplace.','Crackled imitates the sound of fire.'],
+['Onomatopoeia','Splash! The dog jumped into the pool.','Splash imitates the sound of hitting the water.'],
+["Simile", "The river curled like a silver snake through the valley.", "Uses like to compare the winding river to a snake."],
+["Simile", "Her explanation was as clear as a freshly cleaned window.", "Uses as to compare the clarity of her explanation to a window."],
+["Simile", "The crowd scattered like leaves in a sudden gust.", "Uses like to compare people moving apart to blowing leaves."],
+["Simile", "The sand felt as rough as sandpaper beneath my feet.", "Uses as to compare the texture of sand to sandpaper."],
+["Simile", "The lantern glowed like a small star in the cave.", "Uses like to compare the lantern’s light to a star."],
+["Simile", "His words stung like tiny needles.", "Uses like to compare hurtful words to the sting of needles."],
+["Simile", "The old engine rattled like a jar of loose coins.", "Uses like to compare engine noise to rattling coins."],
+["Metaphor", "The library was an island of calm during lunch.", "Directly compares the quiet library to an island of calm."],
+["Metaphor", "Her ideas were sparks that lit the discussion.", "Directly describes ideas as sparks."],
+["Metaphor", "The hallway became a river of students.", "Directly compares the flow of students to a river."],
+["Metaphor", "The principal’s announcement was a thunderclap of surprise.", "Directly compares the announcement to a thunderclap."],
+["Metaphor", "His memory is a filing cabinet of facts.", "Directly compares memory to a filing cabinet."],
+["Metaphor", "Our friendship is a sturdy bridge.", "Directly compares friendship to a sturdy bridge."],
+["Metaphor", "The final chapter was a doorway to new questions.", "Directly compares the chapter to a doorway."],
+["Personification", "The stubborn zipper refused to close.", "Gives a zipper the human ability to refuse."],
+["Personification", "The shadows crept silently along the wall.", "Describes shadows as if they could creep intentionally."],
+["Personification", "The porch light welcomed us home.", "Gives a porch light the human action of welcoming."],
+["Personification", "The thunder grumbled above the mountains.", "Gives thunder the human action of grumbling."],
+["Personification", "The forgotten bicycle waited patiently in the garage.", "Gives a bicycle the human ability to wait patiently."],
+["Personification", "The recipe begged for one more pinch of salt.", "Gives a recipe the human action of begging."],
+["Personification", "The branches reached toward the rising sun.", "Describes branches as if they could reach deliberately."],
+["Hyperbole", "My backpack contains enough books to fill a library.", "Exaggerates how many books are in the backpack."],
+["Hyperbole", "I waited a thousand years for the bus.", "Exaggerates how long the speaker waited."],
+["Hyperbole", "His sneeze shook the entire planet.", "Exaggerates the force of a sneeze."],
+["Hyperbole", "I have enough chores to last ten lifetimes.", "Exaggerates the number of chores."],
+["Hyperbole", "The room was so quiet I could hear a pin drop across town.", "Exaggerates how silent the room was."],
+["Hyperbole", "She has a mountain of shoes in her closet.", "Exaggerates the quantity of shoes."],
+["Idiom", "When the plan failed, we went back to the drawing board.", "Back to the drawing board means starting over with a new plan."],
+["Idiom", "I was on cloud nine after winning the contest.", "On cloud nine means extremely happy."],
+["Idiom", "Please cut to the chase and tell us the result.", "Cut to the chase means get to the main point."],
+["Idiom", "We burned the midnight oil finishing the project.", "Burned the midnight oil means worked late into the night."],
+["Idiom", "The coach said not to throw in the towel.", "Throw in the towel means give up."],
+["Idiom", "Getting the lead role was the icing on the cake.", "Icing on the cake means an extra benefit added to something good."],
+["Idiom", "After weeks of practice, the routine became second nature.", "Second nature means something that feels automatic or easy."],
+["Onomatopoeia", "Whoosh! The skateboard rolled down the ramp.", "Whoosh imitates the sound of quick movement."],
+["Onomatopoeia", "The soda fizzed as I opened the can.", "Fizzed imitates the sound of escaping bubbles."],
+["Onomatopoeia", "Clang! The metal gate swung shut.", "Clang imitates the ringing sound of metal striking metal."],
+["Onomatopoeia", "The woodpecker went tap-tap-tap on the tree.", "Tap-tap-tap imitates repeated light knocks."],
+["Onomatopoeia", "The tires screeched as the car stopped.", "Screeched imitates the high-pitched sound of tires."],
+["Onomatopoeia", "The creek gurgled over smooth rocks.", "Gurgled imitates the bubbling sound of flowing water."]
+];
+const TYPES=['Simile','Metaphor','Personification','Hyperbole','Idiom','Onomatopoeia'];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
+let questions=[],index=0,score=0,streak=0,answered=false,history=[],mode='all',length=15;
+const key=()=>`flf-best-${mode}-${length}`;
+function best(){try{return Number(localStorage.getItem(key()))||0}catch(e){return 0}}
+function saveBest(value){try{localStorage.setItem(key(),String(value));return true}catch(e){return false}}
+function show(id){['setup','game','results'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
+function updateMenu(){const m=$('mode').value,n=$('count').value;let score=0;try{score=Number(localStorage.getItem(`flf-best-${m}-${n}`))||0}catch(e){}$('bestMenu').textContent=`🏆 Your best for this mode: ${score} / ${n}`;}
+function start(){mode=$('mode').value;length=Number($('count').value);let allowed=mode==='all'?TYPES:mode==='core'?TYPES.slice(0,3):TYPES.slice(3);questions=shuffle(BANK.filter(q=>allowed.includes(q[0]))).slice(0,length);index=0;score=0;streak=0;history=[];show('game');draw();}
+function draw(){answered=false;const q=questions[index];$('number').textContent=`${index+1}/${questions.length}`;$('score').textContent=score;$('streak').textContent=streak;$('best').textContent=best();$('fill').style.width=`${100*index/questions.length}%`;$('progress').setAttribute('aria-valuenow',String(Math.round(100*index/questions.length)));$('sentence').textContent=`“${q[1]}”`;$('feedback').textContent='Choose an answer to see an explanation.';$('feedback').className='feedback';$('next').classList.add('hidden');const choices=$('choices');choices.replaceChildren();shuffle(allowedTypes()).forEach(type=>{const b=document.createElement('button');b.className='choice';b.textContent=type;b.addEventListener('click',()=>answer(type));choices.appendChild(b);});}
+function allowedTypes(){return mode==='all'?TYPES:mode==='core'?TYPES.slice(0,3):TYPES.slice(3)}
+function answer(pick){if(answered)return;answered=true;let q=questions[index],correct=pick===q[0];if(correct){score++;streak++}else{streak=0}history.push({sentence:q[1],answer:q[0],pick,reason:q[2]});$('score').textContent=score;$('streak').textContent=streak;Array.from($('choices').children).forEach(b=>{b.disabled=true;if(b.textContent===q[0])b.classList.add('correct');else if(b.textContent===pick)b.classList.add('incorrect');});$('feedback').className=`feedback ${correct?'good':'bad'}`;$('feedback').textContent=`${correct?'✅ Correct!':'❌ Not quite! The answer is '+q[0]+'.'} ${q[2]}`;$('next').textContent=index===questions.length-1?'See Results →':'Next Question →';$('next').classList.remove('hidden');$('next').focus();}
+function finish(){let old=best(),record=score>old;if(record)saveBest(score);$('resultTitle').textContent=score===questions.length?'🌟 Perfect Frenzy!':score>=questions.length*.8?'🎉 Fantastic Work!':'🎭 Round Complete!';const player=$('player').value.trim();$('resultSummary').textContent=`${player?player+', you got':'You got'} ${score} out of ${questions.length} correct (${Math.round(score/questions.length*100)}%).`;$('record').textContent=record?'🏆 NEW HIGH SCORE!':`🏆 Best score: ${Math.max(old,score)} / ${questions.length}`;$('review').replaceChildren();history.forEach((r,i)=>{const div=document.createElement('div');div.className='review';const title=document.createElement('strong');title.textContent=`${i+1}. ${r.pick===r.answer?'✅':'❌'} ${r.sentence}`;const explanation=document.createElement('div');explanation.className='tiny';explanation.textContent=`Answer: ${r.answer} · Your choice: ${r.pick}. ${r.reason}`;div.append(title,explanation);$('review').appendChild(div)});show('results');}
+$('start').addEventListener('click',start);$('next').addEventListener('click',()=>{index++;if(index>=questions.length)finish();else draw()});$('again').addEventListener('click',start);$('settings').addEventListener('click',()=>{show('setup');updateMenu()});$('mode').addEventListener('change',updateMenu);$('count').addEventListener('change',updateMenu);updateMenu();
+</script></body></html>
