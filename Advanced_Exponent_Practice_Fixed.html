@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Advanced Exponent Practice</title>
+<style>
+:root{font-family:Georgia,'Times New Roman',serif;color:#152548;background:#f4f7fc}*{box-sizing:border-box}body{margin:0;padding:22px 14px}.wrap{max-width:960px;margin:auto}.hero,.instructions,.quiz{border:1px solid #cbdaf6;border-radius:13px;background:#fff;box-shadow:0 3px 15px #182a4610}.hero{padding:25px 30px;background:linear-gradient(120deg,#e8effd,#f8faff);display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:clamp(28px,4.5vw,48px);margin:0 0 8px;color:#0c2353}.hero p{margin:0;font-size:19px}.score{white-space:nowrap;border:1px solid #c2d5ff;background:#fff;border-radius:10px;padding:18px;font-size:23px;font-weight:bold}.score strong{color:#175bd2}.instructions{background:#edf3fc;padding:16px 30px;margin:14px 0;font-size:17px;line-height:1.55}.instructions ul{margin:0;padding-left:20px}.quiz{padding:30px;text-align:center}.count{display:inline-block;background:#e4eeff;border-radius:30px;padding:10px 22px;font-weight:bold;font-size:21px}.problem{font-size:clamp(35px,6vw,61px);min-height:150px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;padding:25px 0}.problem sup{font-size:.58em;line-height:0}.frac{display:inline-flex;vertical-align:middle;align-items:center;flex-direction:column;text-align:center;font-size:.92em}.frac .num{border-bottom:2px solid currentColor;padding:0 8px 5px}.frac .den{padding:5px 8px 0}.problem .frac{line-height:1.3}.math{white-space:nowrap}.answerline{display:flex;align-items:center;justify-content:center;gap:15px;flex-wrap:wrap}#answer{font-family:Georgia,serif;font-size:27px;min-width:240px;width:min(490px,100%);min-height:68px;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;padding:14px;border:2px solid #aebdd4;border-radius:8px;background:#fff;color:#152548}#answer:empty:before{content:attr(data-placeholder);color:#777;font-size:19px;pointer-events:none}#answer .expbox{display:inline-block;vertical-align:super;font:700 18px Arial,sans-serif;min-width:24px;min-height:24px;padding:2px 5px;margin:0 1px;background:#d8eaff;color:#111;border:2px solid #5693f3;border-radius:5px;line-height:1.1;text-align:center;outline-offset:2px}#answer .expbox:empty:before{content:'□';color:#111}#answer .expbox:focus{outline:2px solid #164ab3;background:#bddbff}#answer:focus{outline:3px solid #c8d8fb} .help{color:#455573;font-size:15px;margin:12px auto}.keyboard{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:13px 0}.keyboard button{padding:8px 13px;background:#f1f5ff;border:1px solid #b6caed;border-radius:7px;font-size:18px;cursor:pointer}.feedback{background:#eff5ff;padding:16px;border-radius:10px;min-height:62px;margin:25px 0 18px;font-size:19px}.feedback.correct{background:#e7f7e9;color:#17612d}.feedback.wrong{background:#fff0ef;color:#8b2525}.buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.buttons button{padding:14px 23px;font-size:19px;font-family:inherit;font-weight:bold;border-radius:9px;cursor:pointer;border:2px solid #2560ed;background:white;color:#1654c1}.buttons .primary{background:#7754d0;color:#fff;border-color:#7754d0}.buttons button:disabled{opacity:.4;cursor:not-allowed}.note{margin-top:20px;color:#65718b;font-size:13px} @media(max-width:600px){body{padding:10px}.hero{padding:16px;flex-direction:column;align-items:flex-start}.hero p{font-size:16px}.score{font-size:19px;padding:10px}.quiz{padding:18px 12px}.problem{gap:12px}.instructions{padding:14px 20px}.buttons button{flex:1 1 44%;font-size:16px}}
+/* High-contrast lettering for blue and colored controls */
+.count, .keyboard button, .buttons button, .buttons .primary { color:#111111 !important; }
+</style>
+</head>
+<body><main class="wrap">
+<header class="hero"><div><h1>Advanced Exponent Practice</h1><p>Simplify each expression using the laws of exponents.</p></div><div class="score">Score: <strong id="score">0 / 10</strong></div></header>
+<section class="instructions"><ul><li>Simplify the expression. Write your answer using positive exponents only.</li><li>Your answer can include variables and fractions (use / for a fraction if needed).</li></ul></section>
+<section class="quiz"><div class="count" id="count">Problem 1 of 10</div><div class="problem" id="problem" aria-live="polite"></div>
+<div class="answerline"><label for="answer" class="sr">Your answer:</label><div id="answer" contenteditable="true" role="textbox" aria-label="Simplified answer, with clickable exponent boxes" aria-multiline="false" spellcheck="false" data-placeholder="Type your simplified answer"></div></div>
+<div class="help">Type your answer and select <strong>□</strong> to add a blank exponent box after a variable or number. Click the raised box and type your exponent. Use / for fractions.</div>
+<div class="keyboard" id="keyboard" aria-label="Math keyboard"></div>
+<div class="feedback" id="feedback" role="status">Enter your answer and click “Check Answer.”</div>
+<div class="buttons"><button class="primary" id="check">Check Answer</button><button id="next" disabled>Next Problem →</button><button id="new">New Set</button></div>
+</section></main>
+<script>
+'use strict';
+// Exact rational monomials: the coefficients remain fractions, and variable exponents are integers.
+const gcd=(a,b)=>{a=a<0n?-a:a;b=b<0n?-b:b;while(b){[a,b]=[b,a%b]}return a||1n};
+function term(n=1n,d=1n,p={}){n=BigInt(n);d=BigInt(d);if(!d)throw Error('zero denominator');if(d<0n){n=-n;d=-d}let g=gcd(n,d);let q={};for(let [k,v] of Object.entries(p))if(v)q[k]=v;return {n:n/g,d:d/g,p:q}}
+const mul=(a,b)=>term(a.n*b.n,a.d*b.d,Object.fromEntries(new Set([...Object.keys(a.p),...Object.keys(b.p)]).values().map(k=>[k,(a.p[k]||0)+(b.p[k]||0)])));
+const div=(a,b)=>{if(!b.n)throw Error('division by zero');return term(a.n*b.d,a.d*b.n,Object.fromEntries(new Set([...Object.keys(a.p),...Object.keys(b.p)]).values().map(k=>[k,(a.p[k]||0)-(b.p[k]||0)])))};
+function pow(a,e){if(!Number.isInteger(e)||Math.abs(e)>100)throw Error('exponent');let n=BigInt(Math.abs(e));return term(e>=0?a.n**n:a.d**n,e>=0?a.d**n:a.n**n,Object.fromEntries(Object.entries(a.p).map(([k,v])=>[k,v*e])))}
+const V=(k,e=1)=>term(1,1,{[k]:e});const C=(n,d=1)=>term(n,d);const P=(a,e)=>pow(a,e);const M=(...a)=>a.reduce(mul,C(1));const D=(a,b)=>div(a,b);
+const sup=e=>'<sup>'+String(e).replace('-','−')+'</sup>';
+const v=(k,e=1)=>k+(e===1?'':sup(e));
+const frac=(a,b)=>'<span class="frac"><span class="num">'+a+'</span><span class="den">'+b+'</span></span>';
+const dot=' · ';
+function shown(t){let numerator=[],denominator=[];let n=t.n<0n?-t.n:t.n;
+ if(n!==1n||!Object.keys(t.p).length)numerator.push(String(n));
+ for(let [k,e] of Object.entries(t.p).sort()){if(e>0)numerator.push(v(k,e));if(e<0)denominator.push(v(k,-e))}
+ if(t.d!==1n)denominator.unshift(String(t.d));let top=numerator.join('')||'1';let s=denominator.length?frac(top,denominator.join('')):top;return (t.n<0n?'−':'')+s}
+// Exactly 100 fixed, distinct problems: ten variations in each of ten exponent-rule families.
+let bank=[];const add=(html,answer,explain)=>bank.push({html,answer,explain});
+for(let i=0;i<10;i++){
+ let b=2+i%4,e=2+i%3,o=2+i%5;
+ add('('+v('y',b)+')'+sup(e),P(V('y',b),e),'Power of a power: multiply the exponents.');
+ add(frac(v('x',o+2)+v('y',e+2),v('x',o-1)+v('y',e-1)),D(M(V('x',o+2),V('y',e+2)),M(V('x',o-1),V('y',e-1))),'Quotient rule: subtract exponents of like bases.');
+ let k=2+i;add('('+k+'s)'+sup(e),P(M(C(k),V('s')),e),'Power of a product: raise both the coefficient and the variable.');
+ let j=2+i%5;add('('+j+v('x',e)+')'+sup(b),P(M(C(j),V('x',e)),b),'Power of a product and power of a power.');
+ add('('+frac(v('x',o+1),v('y',e))+')'+sup(b),P(D(V('x',o+1),V('y',e)),b),'Power of a quotient: raise numerator and denominator.');
+ let m=2+i%4,n=2+i%3;add('('+frac(m+v('a',b),n+'b')+')'+sup(e),P(D(M(C(m),V('a',b)),M(C(n),V('b'))),e),'Apply the power to the fraction, coefficient, and variables.');
+ add(v('x',-(i+2)),P(V('x'),-(i+2)),'Negative exponent: move the factor to the denominator.');
+ add((i+2)+sup(-(i%3+2)),P(C(i+2),-(i%3+2)),'Negative exponent: use the reciprocal, then evaluate.');
+ let ea=-(i+6),eb=1+i%5,ec=2+i%4;add('('+v('a',ea)+')('+v('a',eb)+')('+v('a',ec)+')',M(V('a',ea),V('a',eb),V('a',ec)),'Product rule: add all three exponents.');
+ let q=2+i%4,r=4+i%5,h=3+i%4,den=2*(i%3+2);
+ add(frac(q+v('x',-r)+v('y',-h),den+v('x',2+i%3)+'y'),D(M(C(q),V('x',-r),V('y',-h)),M(C(den),V('x',2+i%3),V('y'))),'Combine coefficients and subtract exponents, then write positive exponents.');
+}
+if(bank.length!==100)throw Error('bank must have 100 questions');
+// Parse expressions typed with traditional notation, such as 8x^3/y^2,
+// 8x³/y², (8x³)/(y²), x*x*x, or 1/(x⁴).
+const uni={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+'};
+function normalize(s){s=s.replace(/[−–]/g,'-').replace(/[×·⋅]/g,'*').replace(/÷/g,'/').replace(/\s+/g,'').replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+/g,x=>'^'+[...x].map(c=>uni[c]).join(''));return s}
+function parse(s){s=normalize(s);let ts=s.match(/\d+|[a-zA-Z]|[()+*\/^-]/g);if(!ts||ts.join('')!==s)throw Error('Unsupported characters');let at=0,peek=()=>ts[at],take=()=>ts[at++];
+ function atom(){let t=take();if(t==='('){let z=expr();if(take()!==')')throw Error('Missing closing parenthesis');return z}if(/^\d+$/.test(t||''))return C(t);if(/^[a-zA-Z]$/.test(t||''))return V(t.toLowerCase());if(t==='-')return M(C(-1),atom());throw Error('Expected number or variable')}
+ function power(){let a=atom();if(peek()==='^'){take();let neg=peek()==='-'?(take(),-1):1;let e=take();if(!/^\d+$/.test(e||''))throw Error('Invalid exponent');a=P(a,neg*Number(e))}return a}
+ // Treat everything following a fraction slash up to the next slash or closing
+ // parenthesis as the denominator. Thus 25a^10/4b^2 means 25a^10/(4b^2).
+ // Students can use explicit parentheses for other intended groupings.
+ function product(){let a=power();while(at<ts.length&&peek()!==')'&&peek()!=='/'){if(peek()==='*'){take();a=M(a,power())}else if(peek()==='-'||peek()==='+')throw Error('Use a single simplified term');else a=M(a,power())}return a}
+ function expr(){let a=product();while(peek()==='/'){take();a=D(a,product())}return a}
+ let ans=expr();if(at!==ts.length)throw Error('Unexpected input');return ans}
+function equal(a,b){let keys=new Set([...Object.keys(a.p),...Object.keys(b.p)]);return a.n===b.n&&a.d===b.d&&[...keys].every(k=>(a.p[k]||0)===(b.p[k]||0))}
+const $=s=>document.getElementById(s);let set=[],index=0,score=0,checked=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newSet(){set=shuffle([...bank]).slice(0,10);index=score=0;render()}
+function render(){checked=false;$('count').textContent='Problem '+(index+1)+' of 10';$('score').textContent=score+' / 10';$('problem').innerHTML=set[index].html+' <span>=</span>';$('answer').innerHTML='';$('answer').contentEditable='true';$('check').disabled=false;$('next').disabled=true;$('next').textContent=index===9?'See Results →':'Next Problem →';$('feedback').className='feedback';$('feedback').textContent='Enter your answer and click “Check Answer.”';$('answer').focus()}
+function check(){if(checked)return;let a;try{a=parse(readAnswer());}catch(e){$('feedback').textContent=e.message.includes('exponent in the blue')?e.message:'Please enter a valid expression. Example: 3x³/(4y³).';return}let current=set[index];checked=true;$('answer').contentEditable='false';$('check').disabled=true;$('next').disabled=false;let ok=equal(a,current.answer);if(ok)score++;$('score').textContent=score+' / 10';$('feedback').className='feedback '+(ok?'correct':'wrong');$('feedback').innerHTML=ok?'✓ Correct! '+current.explain:'Not quite. Correct answer: <strong>'+shown(current.answer)+'</strong>. '+current.explain}
+function next(){if(!checked)return;if(index===9){$('count').textContent='Set Complete!';$('problem').textContent='You scored '+score+' out of 10.';$('answer').style.display='none';$('keyboard').style.display='none';$('check').style.display='none';$('next').disabled=true;$('feedback').className='feedback';$('feedback').textContent='Click “New Set” to practice 10 more problems.';return}index++;render()}
+$('new').addEventListener('click',()=>{$('answer').style.display='';$('keyboard').style.display='';$('check').style.display='';newSet()});$('check').addEventListener('click',check);$('next').addEventListener('click',next);$('answer').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!e.target.classList.contains('expbox'))checked?next():check()}});
+// Exponent fields are real editable raised boxes. Their numeric content is
+// converted to normal mathematical exponent syntax for exact answer grading.
+function readAnswer(){let out='';function visit(node){if(node.nodeType===Node.TEXT_NODE){out+=node.textContent;return}if(node.nodeType!==Node.ELEMENT_NODE)return;if(node.classList.contains('expbox')){let value=node.textContent.trim().replace(/−/g,'-');if(!/^-?\d+$/.test(value))throw Error('Enter an exponent in the blue box');out+='^'+value;return}for(let child of node.childNodes)visit(child)}visit($('answer'));return out.trim()}
+function insertTextAtCaret(text){let field=$('answer');field.focus();let sel=window.getSelection();if(!sel.rangeCount||!field.contains(sel.anchorNode)){field.append(document.createTextNode(text));return}let range=sel.getRangeAt(0);range.deleteContents();let n=document.createTextNode(text);range.insertNode(n);range.setStartAfter(n);range.collapse(true);sel.removeAllRanges();sel.addRange(range)}
+function insertExponent(){if(checked)return;let field=$('answer');let sel=window.getSelection();let range=sel.rangeCount?sel.getRangeAt(0):null;if(!range||!field.contains(range.commonAncestorContainer)){field.focus();range=document.createRange();range.selectNodeContents(field);range.collapse(false)}if(range.startContainer.nodeType===Node.ELEMENT_NODE&&range.startContainer.classList?.contains('expbox')){range.setStartAfter(range.startContainer);range.collapse(true)}let box=document.createElement('span');box.className='expbox';box.contentEditable='true';box.setAttribute('role','textbox');box.setAttribute('aria-label','Exponent number');box.setAttribute('title','Click to type exponent');range.deleteContents();range.insertNode(box);let after=document.createTextNode(' ');box.after(after);sel.removeAllRanges();let inside=document.createRange();inside.selectNodeContents(box);inside.collapse(true);sel.addRange(inside);box.focus()}
+$('answer').addEventListener('input',()=>{if(!checked&&$('feedback').textContent.startsWith('Please'))$('feedback').textContent='Enter your answer and click “Check Answer.”'});
+
+for(let ch of ['x','y','a','b','(',')','/','−']){let b=document.createElement('button');b.textContent=ch;b.type='button';b.addEventListener('mousedown',e=>e.preventDefault());b.onclick=()=>insertTextAtCaret(ch==='−'?'-':ch);$('keyboard').append(b)}
+let exponentButton=document.createElement('button');exponentButton.type='button';exponentButton.innerHTML='<sup>□</sup>';exponentButton.setAttribute('aria-label','Add blank exponent box');exponentButton.title='Add exponent';exponentButton.style.cssText='background:#d8eaff;color:#111;border:2px solid #5693f3;font-weight:bold';exponentButton.addEventListener('mousedown',e=>e.preventDefault());exponentButton.onclick=insertExponent;$('keyboard').append(exponentButton);
+newSet();
+</script></body></html>
